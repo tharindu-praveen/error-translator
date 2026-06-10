@@ -1,122 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import ErrorInput from "./components/ErrorInput";
+import ResultCard from "./components/ResultCard";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [errorText, setErrorText] = useState("");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(null);
+
+  const handleTranslate = async () => {
+    if (!errorText.trim()) return;
+    setLoading(true);
+    setResult(null);
+    setErr(null);
+    try {
+      const response = await fetch("http://localhost:3001/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: errorText }),
+      });
+      if (!response.ok) throw new Error("Server error");
+      const data = await response.json();
+      setResult(data);
+    } catch (e) {
+      setErr("Something went wrong. Make sure the backend is running.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    setErrorText("");
+    setResult(null);
+    setErr(null);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="min-h-screen bg-gray-950 text-white">
+      <div className="border-b border-gray-800 px-6 py-4">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <span className="text-2xl">🔴</span>
+          <div>
+            <h1 className="text-lg font-semibold">Error Translator</h1>
+            <p className="text-xs text-gray-400">Paste any error. Get plain English back.</p>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </div>
+      <div className="max-w-3xl mx-auto px-6 py-10 flex flex-col gap-6">
+        <ErrorInput
+          value={errorText}
+          onChange={setErrorText}
+          onTranslate={handleTranslate}
+          onClear={handleClear}
+          loading={loading}
+        />
+        {loading && <LoadingSpinner />}
+        {err && (
+          <div className="bg-red-950 border border-red-800 rounded-xl p-4 text-red-300 text-sm">
+            {err}
+          </div>
+        )}
+        {result && <ResultCard result={result} />}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
