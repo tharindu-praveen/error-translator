@@ -1,15 +1,35 @@
+import { useState } from "react";
+
 const severityConfig = {
   warning: { color: "text-yellow-400", bg: "bg-yellow-400/10 border-yellow-400/20", label: "⚠ Warning" },
   error:   { color: "text-orange-400", bg: "bg-orange-400/10 border-orange-400/20", label: "✖ Error"   },
   fatal:   { color: "text-red-400",    bg: "bg-red-400/10 border-red-400/20",       label: "💀 Fatal"   },
 };
 
-function ResultCard({ result }) {
+function ResultCard({ result, errorText }) {
+  const [copied, setCopied]     = useState(false);
+  const [shared, setShared]     = useState(false);
   const severity = severityConfig[result.severity] || severityConfig.error;
 
-  const copyToClipboard = () => {
-    const text = `What happened: ${result.summary}\n\nWhy: ${result.cause}\n\nFix:\n${result.steps.map((s,i)=>`${i+1}. ${s}`).join("\n")}\n\nTip: ${result.tip}`;
+  const copyText = () => {
+    const text = [
+      `What happened: ${result.summary}`,
+      `\nWhy: ${result.cause}`,
+      `\nFix:\n${result.steps.map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
+      `\nTip: ${result.tip}`,
+    ].join("");
     navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyShareLink = () => {
+    const payload = btoa(JSON.stringify({ error: errorText, result }));
+    const url = `${window.location.origin}?result=${payload}`;
+    navigator.clipboard.writeText(url);
+    window.history.replaceState({}, "", `?result=${payload}`);
+    setShared(true);
+    setTimeout(() => setShared(false), 2000);
   };
 
   return (
@@ -23,9 +43,14 @@ function ResultCard({ result }) {
             {result.language}
           </span>
         </div>
-        <button onClick={copyToClipboard} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-          Copy ↗
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={copyShareLink} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+            {shared ? "✓ Link copied!" : "Share ↗"}
+          </button>
+          <button onClick={copyText} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+            {copied ? "✓ Copied!" : "Copy"}
+          </button>
+        </div>
       </div>
 
       <div className="px-5 py-4 border-b border-gray-800">
@@ -43,7 +68,7 @@ function ResultCard({ result }) {
         <ol className="flex flex-col gap-2">
           {result.steps.map((step, i) => (
             <li key={i} className="flex gap-3 text-sm text-gray-300">
-              <span className="text-gray-600 font-mono font-medium flex-shrink-0">{i+1}.</span>
+              <span className="text-gray-600 font-mono font-medium flex-shrink-0">{i + 1}.</span>
               <span className="leading-relaxed">{step}</span>
             </li>
           ))}
