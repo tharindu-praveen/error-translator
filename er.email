@@ -1,0 +1,29 @@
+[33mcommit 9365b04abde1336bb18cfb776bf98b6f62ba7fca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: tharindu-praveen <tharindupraveen522@gmail.com>
+Commit: tharindu-praveen <tharindupraveen522@gmail.com>
+
+    feat: add history panel, share links and copy feedback
+
+[33mcommit 0258de4ed01b66ee0dede04a6409fec1682e7de2[m
+Author: tharindu-praveen <tharindupraveen522@gmail.com>
+Commit: tharindu-praveen <tharindupraveen522@gmail.com>
+
+    feat: add React frontend with error input and result card
+
+[33mcommit edc9ab2bc110454b6c802e7f3938541def19f4b0[m
+Author: tharindu-praveen <tharindupraveen522@gmail.com>
+Commit: tharindu-praveen <tharindupraveen522@gmail.com>
+
+    feat: add Express backend with /translate endpoint
+
+[33mcommit e644f39c788c83719a78a7367cc6e4412f250506[m
+Author: Mr.Alpha <130214951+MrAplha@users.noreply.github.com>
+Commit: Mr.Alpha <130214951+MrAplha@users.noreply.github.com>
+
+    feat: initial project structure with frontend and backend
+
+[33mcommit f4d9d183363940752e9c69a0289dc5fdd544c901[m
+Author: Tharindu Praveen <tharindupraveen522@gmail.com>
+Commit: GitHub <noreply@github.com>
+
+    Initial commit

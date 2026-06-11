@@ -7,7 +7,12 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    /\.vercel\.app$/,
+  ]
+}));
 app.use(express.json());
 
 // Health check — visit this to confirm server is running

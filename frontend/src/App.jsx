@@ -47,7 +47,7 @@ function App() {
     setResult(null);
     setErr(null);
     try {
-      const response = await fetch("http://localhost:3001/translate", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/translate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ error: errorText }),
